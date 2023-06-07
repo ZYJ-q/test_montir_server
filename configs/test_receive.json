@@ -1,0 +1,61 @@
+{
+    "product": {
+        "id": 1,
+        "name": "test_product"
+    },
+    "servers": [
+        {
+            "id": 1,
+            "name": "test_server",
+            "host": "139.162.122.119",
+            "port": "22",
+            "user_name": "lzq",
+            "password": "test123456",
+            "programs": [
+                {
+                    "id": 1,
+                    "name": "nnnn",
+                    "address": "/home/lzq/strategy/taker",
+                    "traders": [
+                        {
+                            "id": 1,
+                            "name": "",
+                            "venue": "Binance",
+                            "type": "Futures",
+                            "balance": "500",
+                            "currency": "USDT",
+                            "api_key": "Yv4J2tzfe1aICnFm0WbAVOg2sfmn5fnV5LTzIxKtXYLV0un34cAgWAJ0aPWou6KF",
+                            "secret_key": "2yhhOGLFZjwY4bGSEeTm5ar3i7YazJ2MtoPc8723u5gbsfHXXFGzm5FaMQlxVhk8",
+                            "base_url": "https://fapi.binance.com",
+                            "other_keys": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "name": "nnnn2",
+                    "address": "/home/lzq/strategy/taker",
+                    "traders": [
+                        {
+                            "id": 2,
+                            "name": "",
+                            "venue": "Binance",
+                            "type": "Futures",
+                            "balance": "500",
+                            "currency": "USDT",
+                            "api_key": "sTaGlpvF3ElwOvcHrw0CAt1bApbF1Kx8MDcT01e7xJ8q1zsOVklGy0XPbkbpurIi",
+                            "secret_key": "3rPwBJziDpbFAesnyt1OeXADc7UXstPaYJc6g5I8jvWgu3LpgXMs60uLksPe2IcF",
+                            "base_url": "https://fapi.binance.com",
+                            "other_keys": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "weixin": {
+        "id": 1,
+        "name": "交易系统警报群",
+        "hook": "37c58173-42d1-463c-b5a6-7c40e7f6d608"
+    }
+}

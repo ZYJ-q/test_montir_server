@@ -1,0 +1,23 @@
+---
+# log4rs.yaml
+refresh_rate: 30 seconds # 检查配置文件变动的时间间隔
+appenders: # appender 负责将日志收集到控制台或文件, 可配置多个
+  stdout:
+    kind: console
+  rolling_file:
+    kind: rolling_file
+    policy:
+      kind: compound # 默认值, 即使用所有 policy
+      trigger: # 当文件超过10mb 时触发 rotate
+        kind: size
+        limit: 10mb
+      roller: # rotate 类型
+        kind: delete # 直接原有文件
+    path: "log/log.log"
+    encoder: # log 信息模式
+      pattern: "{d} - {m}{n}"
+root: # 对全局 log 进行配置
+  level: info
+  appenders:
+    - stdout
+    - rolling_file

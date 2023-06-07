@@ -1,0 +1,63 @@
+{
+    "account": {
+        "total": {
+            "netWorth": "1.00",
+            "equity": "",
+            "day_pnl": "",
+            "week_pnl": ""
+        },
+        "sub": [
+            {
+                "name": "",
+                "origin_balance": "",
+                "equity": "",
+                "total_Balance": "500",
+                "total_margin": "500",
+                "leverage": "1",
+                "available_margin": "",
+                "locked_margin": "",
+                "long_balance": "多头仓位总金额",
+                "short_balance": "空头仓位总金额",
+                "day_transactionQty": "24小时内交易总数",
+                "week_transactionQty": "一周内交易总数",
+                "day_transactionPrice": "24小时内交易总金额",
+                "week_transactionPrice": "一周内交易总金额",
+                "day_pnl": "24小时内盈亏",
+                "week_pnl": "一周内盈亏"
+            },
+            {
+                "name": "",
+                "notional": "",
+                "wallet": "500",
+                "margin": "500",
+                "leverage": "1",
+                "available_margin": "",
+                "locked_margin": "",
+                "LONG_balance": "多头仓位总金额",
+                "SHORT_balance": "空头仓位总金额",
+                "day_transactionQty": "24小时内交易总数",
+                "week_transactionQty": "一周内交易总数",
+                "day_transactionPrice": "24小时内交易总金额",
+                "week_transactionPrice": "一周内交易总金额",
+                "day_pnl": "24小时内盈亏",
+                "week_pnl": "一周内盈亏"
+            }
+        ]
+    },
+    "program": [
+        {
+            "name": "nnnn",
+            "server_host": "139.162.122.119",
+            "address": "/home/lzq/strategy/taker",
+            "running": false,
+            "info": "not start"
+        },
+        {
+            "name": "nnnn2",
+            "server_host": "139.162.122.119",
+            "address": "/home/lzq/strategy/taker",
+            "running": false,
+            "info": "not start"
+        }
+    ]
+}
