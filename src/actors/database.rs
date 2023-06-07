@@ -286,7 +286,79 @@ pub fn get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<HashMap<Strin
     return Ok(traders);
 }
 
+pub fn test_get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<Vec<Trader>> {
+    let mut traders: Vec<Trader> = Vec::new();
+    let mut conn = pool.get_conn().unwrap();
+    let res: Result<Vec<u64>> = conn.exec(
+        r"select tra_id from test_prod_tra where prod_id = :prod_id",
+        params! {
+            "prod_id" => prod_id
+        },
+    );
+    match res {
+        Ok(ids) => {
+            for tra_id in ids {
+                let res = conn
+                    .exec_first(
+                        r"select * from test_traders where tra_id = :tra_id",
+                        params! {
+                            "tra_id" => tra_id
+                        },
+                    )
+                    .map(
+                        // Unpack Result
+                        |row| {
+                            row.map(
+                                |(
+                                    tra_id,
+                                    tra_venue,
+                                    ori_balance,
+                                    tra_currency,
+                                    api_key,
+                                    secret_key,
+                                    other_keys,
+                                    r#type,
+                                    name,
+                                    show,
+                                    threshold
+                                )| Trader {
+                                    tra_id,
+                                    tra_venue,
+                                    ori_balance,
+                                    tra_currency,
+                                    api_key,
+                                    secret_key,
+                                    other_keys,
+                                    r#type,
+                                    name,
+                                    show,
+                                    threshold
 
+                                },
+                            )
+                        },
+                    );
+                match res {
+                    Ok(trader) => match trader {
+                        Some(tra) => {
+                            traders.push(tra);
+                        }
+                        None => {
+                            continue;
+                        }
+                    },
+                    Err(e) => {
+                        return Err(e);
+                    }
+                }
+            }
+        }
+        Err(e) => {
+            return Err(e);
+        }
+    }
+    return Ok(traders);
+}
 
 
 

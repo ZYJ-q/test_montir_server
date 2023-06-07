@@ -163,7 +163,7 @@ pub async fn get_account(mut payload: web::Payload, db_pool: web::Data<Pool>) ->
         }
     }
 
-    let date =  database::get_traders(db_pool.clone(), &obj.prod_id);
+    let date =  database::test_get_traders(db_pool.clone(), &obj.prod_id);
         match date {
             Ok(traders) => {
                 return Ok(HttpResponse::Ok().json(Response {
