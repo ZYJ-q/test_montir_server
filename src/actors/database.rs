@@ -165,7 +165,7 @@ pub fn get_products(pool: web::Data<Pool>, account_id: u64) -> Result<Option<Vec
     let mut products: Vec<Product> = Vec::new();
     let mut conn = pool.get_conn().unwrap();
     let res: Result<Vec<u64>> = conn.exec(
-        r"select prod_id from acc_prod where acc_id = :acc_id",
+        r"select prod_id from test_acc_prod where acc_id = :acc_id",
         params! {
             "acc_id" => account_id
         },
@@ -176,7 +176,7 @@ pub fn get_products(pool: web::Data<Pool>, account_id: u64) -> Result<Option<Vec
                 let mut conn = pool.get_conn().unwrap();
                 let prod = conn
                     .exec_first(
-                        r"select * from products where prod_id = :prod_id",
+                        r"select * from test_products where prod_id = :prod_id",
                         params! {
                             "prod_id" => prod_id
                         },
@@ -216,7 +216,7 @@ pub fn get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<HashMap<Strin
     let mut traders: HashMap<String, Trader> = HashMap::new();
     let mut conn = pool.get_conn().unwrap();
     let res: Result<Vec<u64>> = conn.exec(
-        r"select tra_id from prod_tra where prod_id = :prod_id",
+        r"select tra_id from test_prod_tra where prod_id = :prod_id",
         params! {
             "prod_id" => prod_id
         },
@@ -226,7 +226,7 @@ pub fn get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<HashMap<Strin
             for tra_id in ids {
                 let res = conn
                     .exec_first(
-                        r"select * from traders where tra_id = :tra_id",
+                        r"select * from test_traders where tra_id = :tra_id",
                         params! {
                             "tra_id" => tra_id
                         },
@@ -292,7 +292,7 @@ pub fn get_trader_incomes(pool: web::Data<Pool>) -> Result<HashMap<String, Trade
     let mut incomes: HashMap<String, Trader> = HashMap::new();
     let mut conn = pool.get_conn().unwrap();
     let res = conn.query_map(
-        "select * from traders",
+        "select * from test_traders",
         |(tra_id, tra_venue, ori_balance, tra_currency, api_key, secret_key, other_keys, r#type, name, show, threshold)| {
             Trader{ tra_id, tra_venue, ori_balance, tra_currency, api_key, secret_key, other_keys, r#type, name, show, threshold }
         }
@@ -410,7 +410,7 @@ pub fn get_trader_positions(pool: web::Data<Pool>, tra_id: &str) -> Result<HashM
     let mut conn = pool.get_conn().unwrap();
     let res = conn
     .exec_first(
-                r"select * from traders where tra_id = :tra_id",
+                r"select * from test_traders where tra_id = :tra_id",
                 params! {
                         "tra_id" => tra_id
                         },
@@ -790,7 +790,7 @@ pub fn get_date_history_trades(
 pub fn get_all_products(pool: web::Data<Pool>) -> Result<Vec<Product>> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.query_map(
-        r"select * from products",
+        r"select * from test_products",
         |(prod_id, prod_name, weixin_id, prog_id)| {
             Product{ prod_id, prod_name, weixin_id, prog_id }
         }
