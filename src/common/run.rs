@@ -41,7 +41,7 @@ pub async fn server(ip: String, config_db: HashMap<String, String>) -> std::io::
             .service(web::resource("/update_positions").route(web::post().to(handlers::update_positions_data)))
             .service(web::resource("/update_ori_balance").route(web::post().to(handlers::update_ori_balance_data)))
     })
-    .bind((ip.as_str(), 8081))?
+    .bind((ip.as_str(), 8082))?
     .run();
 
     return server.await;
