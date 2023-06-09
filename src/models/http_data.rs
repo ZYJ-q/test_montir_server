@@ -84,6 +84,17 @@ pub struct DelectOrders{
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct AddAccounts{
+    pub r#type: String,
+    pub token: String,
+    pub name: String,
+    pub api_key: String,
+    pub secret_key: String,
+    pub alarm: String,
+    pub threshold: String
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct AddOrders{
     pub r#type: String,
     pub token: String,

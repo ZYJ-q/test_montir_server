@@ -1059,3 +1059,33 @@ pub fn delect_accounts(pool: web::Data<Pool>, name:&str) -> Result<()> {
         }
     }
 }
+
+
+// 添加账户
+pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:&str, alarm:&str, threshold:&str) -> Result<()> {
+    let mut conn = pool.get_conn().unwrap();
+    let res = conn.exec_drop(
+        r"INSERT INTO test_traders (tra_venue, ori_balance, tra_currency, api_key, secret_key, other_keys, type, name, alarm, threshold)
+        VALUES (:tra_venue, :ori_balance, :tra_currency, :api_key, :secret_key, :other_keys, :type, :name, :alarm, :threshold)",
+        params! {
+            "tra_venue" => "Binance",
+            "ori_balance" => "500",
+            "tra_currency" => "USDT", 
+            "api_key" => api_key,
+            "secret_key" => secret_key,
+            "other_keys" => "",
+            "type" => "Futures",
+            "name" => name,
+            "alarm" => alarm,
+            "threshold" => threshold
+        },
+    );
+    match res {
+        Ok(()) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e);
+        }
+    }
+}

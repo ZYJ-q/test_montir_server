@@ -4,7 +4,7 @@ use mysql::Pool;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 
-use super::{database, SignIn, SignInRes, SignOut, Account, actions, Trade, Posr, NetWorthRe, IncomesRe, Equity, DateTrade, DelectOrders, AddOrders, AddPositions, UpdatePositions, UpdateOriBalance, UpdateAlarms};
+use super::{database, SignIn, SignInRes, SignOut, Account, actions, Trade, Posr, NetWorthRe, IncomesRe, Equity, DateTrade, DelectOrders, AddOrders, AddPositions, UpdatePositions, UpdateOriBalance, UpdateAlarms, AddAccounts};
 
 const MAX_SIZE: usize = 262_144; // max payload size is 256k
 
@@ -1011,6 +1011,46 @@ pub async fn delete_accounts_data(mut payload: web::Payload, db_pool: web::Data<
     }
 
     let data = database::delect_accounts(db_pool.clone(), &obj.name);
+    match data {
+        Ok(all_products) => {
+            return Ok(HttpResponse::Ok().json(Response {
+                status: 200,
+                data: all_products,
+            }));    
+        }
+        Err(e) => {
+            return Err(error::ErrorNotFound(e));
+        }
+        
+    }
+}
+
+
+
+// 添加账号
+pub async fn add_accounts_data(mut payload: web::Payload, db_pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+    // payload is a stream of Bytes objects
+    let mut body = web::BytesMut::new();
+    while let Some(chunk) = payload.next().await {
+        let chunk = chunk?;
+        // limit max size of in-memory payload
+        if (body.len() + chunk.len()) > MAX_SIZE {
+            return Err(error::ErrorBadRequest("overflow"));
+        }
+        body.extend_from_slice(&chunk);
+    }
+
+    // body is loaded, now we can deserialize serde-json
+    let obj = serde_json::from_slice::<AddAccounts>(&body)?;
+
+    match database::is_active(db_pool.clone(), &obj.token) {
+        true => {}
+        false => {
+            return Err(error::ErrorNotFound("account not active"));
+        }
+    }
+
+    let data = database::add_accounts(db_pool.clone(), &obj.name, &obj.api_key, &obj.secret_key, &obj.alarm, &obj.threshold);
     match data {
         Ok(all_products) => {
             return Ok(HttpResponse::Ok().json(Response {
