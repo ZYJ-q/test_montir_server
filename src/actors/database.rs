@@ -216,7 +216,7 @@ pub fn get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<HashMap<Strin
     let mut traders: HashMap<String, Trader> = HashMap::new();
     let mut conn = pool.get_conn().unwrap();
     let res: Result<Vec<u64>> = conn.exec(
-        r"select tra_name from test_prod_tra where prod_id = :prod_id",
+        r"select tra_id from test_prod_tra where prod_id = :prod_id",
         params! {
             "prod_id" => prod_id
         },
@@ -226,9 +226,9 @@ pub fn get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<HashMap<Strin
             for tra_id in ids {
                 let res = conn
                     .exec_first(
-                        r"select * from test_traders where name = :tra_name",
+                        r"select * from test_traders where tra_id = :tra_id",
                         params! {
-                            "tra_name" => tra_id
+                            "tra_id" => tra_id
                         },
                     )
                     .map(
@@ -290,7 +290,7 @@ pub fn test_get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<Vec<Trad
     let mut traders: Vec<Trader> = Vec::new();
     let mut conn = pool.get_conn().unwrap();
     let res: Result<Vec<u64>> = conn.exec(
-        r"select tra_name from test_prod_tra where prod_id = :prod_id",
+        r"select tra_id from test_prod_tra where prod_id = :prod_id",
         params! {
             "prod_id" => prod_id
         },
@@ -300,9 +300,9 @@ pub fn test_get_traders(pool: web::Data<Pool>, prod_id: &str) -> Result<Vec<Trad
             for tra_id in ids {
                 let res = conn
                     .exec_first(
-                        r"select * from test_traders where name = :tra_name",
+                        r"select * from test_traders where tra_id = :tra_id",
                         params! {
-                            "tra_name" => tra_id
+                            "tra_id" => tra_id
                         },
                     )
                     .map(
@@ -1081,22 +1081,7 @@ pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:
         },
     );
 
-    let res = conn.exec_drop(
-        r"INSERT INTO test_traders (tra_venue, ori_balance, tra_currency, api_key, secret_key, other_keys, type, name, alarm, threshold)
-        VALUES (:tra_venue, :ori_balance, :tra_currency, :api_key, :secret_key, :other_keys, :type, :name, :alarm, :threshold)",
-        params! {
-            "tra_venue" => "Binance",
-            "ori_balance" => "500",
-            "tra_currency" => "USDT", 
-            "api_key" => api_key,
-            "secret_key" => secret_key,
-            "other_keys" => "",
-            "type" => "Futures",
-            "name" => name,
-            "alarm" => alarm,
-            "threshold" => threshold
-        },
-    );
+    
     match res {
         Ok(()) => {
             return Ok(());
