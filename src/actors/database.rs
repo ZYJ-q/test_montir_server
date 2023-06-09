@@ -958,11 +958,11 @@ pub fn delect_positions(pool: web::Data<Pool>, name:&str) -> Result<()> {
     }
 }
 
-// 添加净头寸监控账号
+// 添加监控账号
 pub fn add_positions(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:&str, threshold:&str) -> Result<()> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.exec_drop(
-        r"INSERT INTO position_alarm (api_key, secret_key, name, threshold)
+        r"INSERT INTO test (api_key, secret_key, name, threshold)
         VALUES (:api_key, :secret_key, :name, :threshold)",
         params! {
             "api_key" => api_key,
@@ -985,7 +985,7 @@ pub fn add_positions(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key
 pub fn update_positions(pool: web::Data<Pool>, name:&str, threshold:&str) -> Result<()> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.exec_drop(
-        r"update position_alarm set threshold = :threshold where name = :name",
+        r"update test_traders set threshold = :threshold where name = :name",
         params! {
             "name" => name,
             "threshold" => threshold
@@ -1009,6 +1009,26 @@ pub fn update_ori_balance(pool: web::Data<Pool>, name:&str, ori_balance:&str) ->
         params! {
             "name" => name,
             "ori_balance" => ori_balance
+        },
+    );
+    match res {
+        Ok(()) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e);
+        }
+    }
+}
+
+// 更新是否打开监控开关
+pub fn update_alarms(pool: web::Data<Pool>, name:&str, alarm:&str) -> Result<()> {
+    let mut conn = pool.get_conn().unwrap();
+    let res = conn.exec_drop(
+        r"update test_traders set alarm = :alarm where name = :name",
+        params! {
+            "name" => name,
+            "alarm" => alarm
         },
     );
     match res {

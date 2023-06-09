@@ -111,6 +111,14 @@ pub struct UpdatePositions{
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateAlarms{
+    pub r#type: String,
+    pub token: String,
+    pub name: String,
+    pub alarm: String
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UpdateOriBalance{
     pub r#type: String,
     pub token: String,

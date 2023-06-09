@@ -4,7 +4,7 @@ use mysql::Pool;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 
-use super::{database, SignIn, SignInRes, SignOut, Account, actions, Trade, Posr, NetWorthRe, IncomesRe, Equity, DateTrade, DelectOrders, AddOrders, AddPositions, UpdatePositions, UpdateOriBalance};
+use super::{database, SignIn, SignInRes, SignOut, Account, actions, Trade, Posr, NetWorthRe, IncomesRe, Equity, DateTrade, DelectOrders, AddOrders, AddPositions, UpdatePositions, UpdateOriBalance, UpdateAlarms};
 
 const MAX_SIZE: usize = 262_144; // max payload size is 256k
 
@@ -934,6 +934,44 @@ pub async fn update_ori_balance_data(mut payload: web::Payload, db_pool: web::Da
     }
 
     let data = database::update_ori_balance(db_pool.clone(), &obj.name, &obj.ori_balance);
+    match data {
+        Ok(all_products) => {
+            return Ok(HttpResponse::Ok().json(Response {
+                status: 200,
+                data: all_products,
+            }));    
+        }
+        Err(e) => {
+            return Err(error::ErrorNotFound(e));
+        }
+        
+    }
+}
+
+// 更新账户是否进行监控
+pub async fn update_accounts_alarm(mut payload: web::Payload, db_pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+    // payload is a stream of Bytes objects
+    let mut body = web::BytesMut::new();
+    while let Some(chunk) = payload.next().await {
+        let chunk = chunk?;
+        // limit max size of in-memory payload
+        if (body.len() + chunk.len()) > MAX_SIZE {
+            return Err(error::ErrorBadRequest("overflow"));
+        }
+        body.extend_from_slice(&chunk);
+    }
+
+    // body is loaded, now we can deserialize serde-json
+    let obj = serde_json::from_slice::<UpdateAlarms>(&body)?;
+
+    match database::is_active(db_pool.clone(), &obj.token) {
+        true => {}
+        false => {
+            return Err(error::ErrorNotFound("account not active"));
+        }
+    }
+
+    let data = database::update_alarms(db_pool.clone(), &obj.name, &obj.alarm);
     match data {
         Ok(all_products) => {
             return Ok(HttpResponse::Ok().json(Response {
