@@ -1082,28 +1082,6 @@ pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:
         },
     );
 
-    let data:Result<Vec<String>> = conn.exec(
-        "select tra_id test_traders where name = :name", 
-        params! {
-            "name" => name
-        },
-    );
-
-    println!("data{:?}", data);
-    // match data {
-    //     Ok(tra_id) => {
-    //         println!("查询到的tra_id", tra_id);
-    //         conn.exec(
-    //             r"INSERT INTO tset_prod_tra (pt_id, prod_id, tra_id) VALUES (:pt_id, :prod_id, :tra_id)", 
-    //             params! {
-    //                 "prod_id" => prod_id,
-    //                 "tra_id" => tra_id,
-    //             },
-    //         );
-    //     }
-    //     Err(_) => todo!(),
-        
-    // }
 
     
     match res {
@@ -1123,7 +1101,7 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
     let mut conn = pool.get_conn().unwrap();
 
     let res:Result<Vec<String>> = conn.exec(
-        "select tra_id test_traders where name = :name", 
+        "select tra_id from test_traders where name = :name", 
         params! {
             "name" => name
         },
