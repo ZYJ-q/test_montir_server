@@ -1100,6 +1100,8 @@ pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:
 pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()> {
     let mut conn = pool.get_conn().unwrap();
 
+    println!("传过来的参数{}", prod_id);
+
     let res:Result<Vec<String>> = conn.exec(
         "select tra_id from test_traders where name = :name", 
         params! {
