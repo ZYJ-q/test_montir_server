@@ -91,7 +91,8 @@ pub struct AddAccounts{
     pub api_key: String,
     pub secret_key: String,
     pub alarm: String,
-    pub threshold: String
+    pub threshold: String,
+    pub prod_id: String
 }
 
 #[derive(Debug, Serialize, Deserialize)]

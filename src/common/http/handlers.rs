@@ -1050,7 +1050,7 @@ pub async fn add_accounts_data(mut payload: web::Payload, db_pool: web::Data<Poo
         }
     }
 
-    let data = database::add_accounts(db_pool.clone(), &obj.name, &obj.api_key, &obj.secret_key, &obj.alarm, &obj.threshold);
+    let data = database::add_accounts(db_pool.clone(), &obj.name, &obj.api_key, &obj.secret_key, &obj.alarm, &obj.threshold, &obj.prod_id);
     match data {
         Ok(all_products) => {
             return Ok(HttpResponse::Ok().json(Response {

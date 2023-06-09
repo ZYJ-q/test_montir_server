@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use actix_web::web;
+use futures_util::io::Read;
 use log4rs::filter::threshold;
 use mysql::prelude::*;
 use mysql::*;
@@ -1062,7 +1063,7 @@ pub fn delect_accounts(pool: web::Data<Pool>, name:&str) -> Result<()> {
 
 
 // 添加账户
-pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:&str, alarm:&str, threshold:&str) -> Result<()> {
+pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:&str, alarm:&str, threshold:&str, prod_id: &str) -> Result<()> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.exec_drop(
         r"INSERT INTO test_traders (tra_venue, ori_balance, tra_currency, api_key, secret_key, other_keys, type, name, alarm, threshold)
@@ -1080,6 +1081,29 @@ pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:
             "threshold" => threshold
         },
     );
+
+    let data:Result<Vec<String>> = conn.exec(
+        "select tra_id test_traders where name = :name", 
+        params! {
+            "name" => name
+        },
+    );
+
+    println!("data{:?}", data);
+    // match data {
+    //     Ok(tra_id) => {
+    //         println!("查询到的tra_id", tra_id);
+    //         conn.exec(
+    //             r"INSERT INTO tset_prod_tra (pt_id, prod_id, tra_id) VALUES (:pt_id, :prod_id, :tra_id)", 
+    //             params! {
+    //                 "prod_id" => prod_id,
+    //                 "tra_id" => tra_id,
+    //             },
+    //         );
+    //     }
+    //     Err(_) => todo!(),
+        
+    // }
 
     
     match res {
