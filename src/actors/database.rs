@@ -1040,3 +1040,22 @@ pub fn update_alarms(pool: web::Data<Pool>, name:&str, alarm:&str) -> Result<()>
         }
     }
 }
+
+// 删除账户
+pub fn delect_accounts(pool: web::Data<Pool>, name:&str) -> Result<()> {
+    let mut conn = pool.get_conn().unwrap();
+    let res = conn.exec_drop(
+        r"delete from test_traders where name = :name",
+        params! {
+            "name" => name
+        },
+    );
+    match res {
+        Ok(()) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e);
+        }
+    }
+}
