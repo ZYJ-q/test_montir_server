@@ -44,6 +44,7 @@ pub async fn server(ip: String, config_db: HashMap<String, String>) -> std::io::
             .service(web::resource("/update_accounts_alarm").route(web::post().to(handlers::update_accounts_alarm)))
             .service(web::resource("/delete_accounts").route(web::post().to(handlers::delete_accounts_data)))
             .service(web::resource("/add_accounts").route(web::post().to(handlers::add_accounts_data)))
+            .service(web::resource("/select_id").route(web::post().to(handlers::select_tra_id)))
             
     })
     .bind((ip.as_str(), 8082))?

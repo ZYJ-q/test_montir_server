@@ -1063,7 +1063,7 @@ pub fn delect_accounts(pool: web::Data<Pool>, name:&str) -> Result<()> {
 
 
 // 添加账户
-pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:&str, alarm:&str, threshold:&str, prod_id: &str) -> Result<()> {
+pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:&str, alarm:&str, threshold:&str) -> Result<()> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.exec_drop(
         r"INSERT INTO test_traders (tra_venue, ori_balance, tra_currency, api_key, secret_key, other_keys, type, name, alarm, threshold)
@@ -1117,22 +1117,41 @@ pub fn add_accounts(pool: web::Data<Pool>, name:&str, api_key: &str, secret_key:
 }
 
 
-// // 更新账户净头寸阈值
-// pub fn update_account_threshold(pool: web::Data<Pool>, name:&str, threshold:&str) -> Result<()> {
-//     let mut conn = pool.get_conn().unwrap();
-//     let res = conn.exec_drop(
-//         r"update test_traders set threshold = :threshold where name = :name",
-//         params! {
-//             "name" => name,
-//             "threshold" => threshold
-//         },
-//     );
-//     match res {
-//         Ok(()) => {
-//             return Ok(());
-//         }
-//         Err(e) => {
-//             return Err(e);
-//         }
-//     }
-// }
+// 查找tra_id并添加到test_prod_tra表中
+
+pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()> {
+    let mut conn = pool.get_conn().unwrap();
+
+    let res:Result<Vec<String>> = conn.exec(
+        "select tra_id test_traders where name = :name", 
+        params! {
+            "name" => name
+        },
+    );
+
+    println!("data数据数据数据数据{:?}", res);
+    // match data {
+    //     Ok(tra_id) => {
+    //         println!("查询到的tra_id", tra_id);
+    //         conn.exec(
+    //             r"INSERT INTO tset_prod_tra (pt_id, prod_id, tra_id) VALUES (:pt_id, :prod_id, :tra_id)", 
+    //             params! {
+    //                 "prod_id" => prod_id,
+    //                 "tra_id" => tra_id,
+    //             },
+    //         );
+    //     }
+    //     Err(_) => todo!(),
+        
+    // }
+
+    
+    match res {
+        Ok(_) => {
+            return Ok(());
+        }
+        Err(e) => {
+            return Err(e);
+        }
+    }
+}
