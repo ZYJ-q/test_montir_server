@@ -1128,7 +1128,7 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
     
     match res {
         Ok(tra_id) => {
-            println!("tra_id{:?}", tra_id);
+            println!("tra_id{:?}", tra_id[0]);
             let _data = conn.exec_drop(
                 r"INSERT INTO test_prod_tra (prod_id, tra_id) VALUES (:prod_id, :tra_id)", 
                 params! {
