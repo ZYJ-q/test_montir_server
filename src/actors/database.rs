@@ -1102,14 +1102,14 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
 
     println!("传过来的参数{}", prod_id);
 
-    let res:Result<Vec<String>> = conn.exec(
+    let res:Result<Vec<u64>> = conn.exec(
         "select tra_id from test_traders where name = :name", 
         params! {
             "name" => name
         },
     );
 
-    println!("data数据数据数据数据{:?}", res);
+    // println!("data数据数据数据数据{:?}", res);
     // match data {
     //     Ok(tra_id) => {
     //         println!("查询到的tra_id", tra_id);
@@ -1127,7 +1127,11 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
 
     
     match res {
-        Ok(_) => {
+        Ok(tra_id) => {
+            println!("tra_id{:?}", tra_id);
+            // conn.exec(
+            //     stmt, params
+            // );
             return Ok(());
         }
         Err(e) => {
