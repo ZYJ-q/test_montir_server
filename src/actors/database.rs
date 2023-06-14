@@ -1162,8 +1162,8 @@ pub fn get_equitys(pool: web::Data<Pool>) -> Result<Vec<Equitys>> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.query_map(
         r"select * from equity",
-        |(name, time, equity_eth, equity, prod_id)| {
-            Equitys{ name, time, equity_eth, equity, prod_id }
+        |(id, name, time, equity_eth, equity, prod_id)| {
+            Equitys{ name, time, equity_eth, equity, prod_id, id }
         }
     ).unwrap();
     return Ok(res);
