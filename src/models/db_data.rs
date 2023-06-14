@@ -31,6 +31,23 @@ pub struct OpenOrders {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct NetWorths {
+    pub name: String,
+    pub time: String,
+    pub net_worth: String,
+    pub prod_id: String
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Equitys {
+    pub name: String,
+    pub time: String,
+    pub equity_eth: String,
+    pub equity: String,
+    pub prod_id: String
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PositionsAlarm {
     pub id: u64,
     pub api_key: String,

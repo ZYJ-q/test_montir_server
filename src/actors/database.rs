@@ -9,7 +9,7 @@ use mysql::*;
 // use crate::common;
 
 // use super::AlarmUnit;
-use super::db_data::{Account, Active, Product, Trader, Trade, Position, NetWorth, Equity, NewPrice, HistoryIncomes, OpenOrders, PositionsAlarm};
+use super::db_data::{Account, Active, Product, Trader, Trade, Position, NetWorth, Equity, NewPrice, HistoryIncomes, OpenOrders, PositionsAlarm, NetWorths, Equitys};
 use super::http_data::SignInProRes;
 
 pub fn create_pool(config_db: HashMap<String, String>) -> Pool {
@@ -1142,4 +1142,29 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
             return Err(e);
         }
     }
+}
+
+
+// 获取净值快照
+pub fn get_net_worths(pool: web::Data<Pool>) -> Result<Vec<NetWorths>> {
+    let mut conn = pool.get_conn().unwrap();
+    let res = conn.query_map(
+        r"select * from net_worth",
+        |(name, time, net_worth, prod_id)| {
+            NetWorths{ name, time, net_worth, prod_id}
+        }
+    ).unwrap();
+    return Ok(res);
+}
+
+// 获取权益快照
+pub fn get_equitys(pool: web::Data<Pool>) -> Result<Vec<Equitys>> {
+    let mut conn = pool.get_conn().unwrap();
+    let res = conn.query_map(
+        r"select * from equity",
+        |(name, time, equity_eth, equity, prod_id)| {
+            Equitys{ name, time, equity_eth, equity, prod_id }
+        }
+    ).unwrap();
+    return Ok(res);
 }

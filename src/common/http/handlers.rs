@@ -1103,3 +1103,81 @@ pub async fn select_tra_id(mut payload: web::Payload, db_pool: web::Data<Pool>) 
         
     }
 }
+
+
+//获取所有的净值数据
+pub async fn get_net_worths_data(mut payload: web::Payload, db_pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+    // payload is a stream of Bytes objects
+    let mut body = web::BytesMut::new();
+    while let Some(chunk) = payload.next().await {
+        let chunk = chunk?;
+        // limit max size of in-memory payload
+        if (body.len() + chunk.len()) > MAX_SIZE {
+            return Err(error::ErrorBadRequest("overflow"));
+        }
+        body.extend_from_slice(&chunk);
+    }
+
+    // body is loaded, now we can deserialize serde-json
+    let obj = serde_json::from_slice::<Equity>(&body)?;
+
+    match database::is_active(db_pool.clone(), &obj.token) {
+        true => {}
+        false => {
+            return Err(error::ErrorNotFound("account not active"));
+        }
+    }
+
+    let data = database::get_net_worths(db_pool.clone());
+    match data {
+        Ok(all_products) => {
+            return Ok(HttpResponse::Ok().json(Response {
+                status: 200,
+                data: all_products,
+            }));    
+        }
+        Err(e) => {
+            return Err(error::ErrorNotFound(e));
+        }
+        
+    }
+}
+
+
+//获取所有的权益数据
+pub async fn get_equitys_data(mut payload: web::Payload, db_pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+    // payload is a stream of Bytes objects
+    let mut body = web::BytesMut::new();
+    while let Some(chunk) = payload.next().await {
+        let chunk = chunk?;
+        // limit max size of in-memory payload
+        if (body.len() + chunk.len()) > MAX_SIZE {
+            return Err(error::ErrorBadRequest("overflow"));
+        }
+        body.extend_from_slice(&chunk);
+    }
+
+    // body is loaded, now we can deserialize serde-json
+    let obj = serde_json::from_slice::<Equity>(&body)?;
+
+    match database::is_active(db_pool.clone(), &obj.token) {
+        true => {}
+        false => {
+            return Err(error::ErrorNotFound("account not active"));
+        }
+    }
+
+    let data = database::get_equitys(db_pool.clone());
+    match data {
+        Ok(all_products) => {
+            return Ok(HttpResponse::Ok().json(Response {
+                status: 200,
+                data: all_products,
+            }));    
+        }
+        Err(e) => {
+            return Err(error::ErrorNotFound(e));
+        }
+        
+    }
+}
