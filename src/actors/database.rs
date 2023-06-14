@@ -1149,7 +1149,7 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
 pub fn get_net_worths(pool: web::Data<Pool>) -> Result<Vec<NetWorths>> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.query_map(
-        r"select * from net_worth",
+        r"select * from net_worth order by time desc",
         |(name, time, net_worth, prod_id)| {
             NetWorths{ name, time, net_worth, prod_id}
         }
@@ -1161,7 +1161,7 @@ pub fn get_net_worths(pool: web::Data<Pool>) -> Result<Vec<NetWorths>> {
 pub fn get_equitys(pool: web::Data<Pool>) -> Result<Vec<Equitys>> {
     let mut conn = pool.get_conn().unwrap();
     let res = conn.query_map(
-        r"select * from equity",
+        r"select * from equity order by time desc",
         |(id, name, time, equity_eth, equity, prod_id)| {
             Equitys{ name, time, equity_eth, equity, prod_id, id }
         }
