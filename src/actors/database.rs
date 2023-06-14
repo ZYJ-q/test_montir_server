@@ -1146,7 +1146,7 @@ pub fn select_id(pool: web::Data<Pool>, name: &str, prod_id: &str) -> Result<()>
 
 
 // 获取净值快照
-pub fn get_net_worths(pool: web::Data<Pool>) -> Result<Vec<NetWorths>> {
+pub fn get_net_worths(pool: web::Data<Pool>) -> Result<Vec<NetWorths>> {  
     let mut conn = pool.get_conn().unwrap();
     let res = conn.query_map(
         r"select * from net_worth order by time desc",
